@@ -1,4 +1,5 @@
 import express from 'express';
+import { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -28,8 +29,8 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-  app.get('/filteredimage', async (req, res) => {
-    const { image_url } = req.query;
+  app.get('/filteredimage', async (req: Request, res: Response) => {
+    const image_url: string = req.query.image_url;
 
     if (!image_url) {
       // In a production scenario we should validate that it is a valid url
@@ -37,7 +38,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     }
 
     try {
-      const filteredImagePath = await filterImageFromURL(image_url);
+      const filteredImagePath: string = await filterImageFromURL(image_url);
       res.sendFile(filteredImagePath, (error) => {
         if (error) {
           console.error(error);
@@ -48,7 +49,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error filtering image'});
+      res.status(422).json({ message: 'Error filtering image'});
     }
   });
   //! END @TODO1
